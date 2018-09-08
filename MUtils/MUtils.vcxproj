@@ -130,7 +130,19 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Maths\Math.hpp" />
+    <ClInclude Include="Maths\Matrix.hpp" />
+    <ClInclude Include="Maths\Quaternion.hpp" />
+    <ClInclude Include="Maths\Transform.hpp" />
+    <ClInclude Include="Maths\Vector.hpp" />
     <ClInclude Include="String.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Maths\Math.cpp" />
+    <ClCompile Include="Maths\Matrix.cpp" />
+    <ClCompile Include="Maths\Quaternion.cpp" />
+    <ClCompile Include="Maths\Transform.cpp" />
+    <ClCompile Include="Maths\Vector.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
