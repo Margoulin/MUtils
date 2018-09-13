@@ -39,7 +39,7 @@ public:
 	static auto	GetRightFromView(const Matrix4x4F&) -> Vector3F;
 	static auto	GetForwardFromView(const Matrix4x4F&) -> Vector3F;
 	static auto	GetPositionFromView(const Matrix4x4F&) -> Vector3F;
-	static auto	GetPositionFromModelMatrix(const Matrix4x4F& value)->Vector3F;
+	static auto	GetPositionFromModelMatrix(const Matrix4x4F& value) -> Vector3F;
 	
 	auto	ToString() const -> std::string;
 	
@@ -53,6 +53,8 @@ public:
 
 	auto	GetArray() const -> const float * const{ return _values; }
 
+	auto	operator*(Matrix4x4F const& other) const -> Matrix4x4F;
+	auto	operator*=(Matrix4x4F const& other) -> Matrix4x4F& {  return *this = *this * other; }
 	auto	operator[] (int index) -> float& { return _values[index]; }
 	auto	operator[] (int index) const -> float { return _values[index]; }
 	auto	operator==(const Matrix4x4F& m2) const -> bool;

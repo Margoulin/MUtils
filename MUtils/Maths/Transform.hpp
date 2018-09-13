@@ -9,8 +9,8 @@ class Transform
 {
 public:
 	Transform();
-	Transform(const Transform&) = delete;
-	Transform(Transform&&) = delete;
+	Transform(Vector3F const& posValue, Quaternion const& rotValue, Vector3F const& scaleValue = Vector3F::one);
+	Transform(Matrix4x4F const& transformationMatrix);
 	~Transform() = default;
 
 	auto	Translate(Vector3F const& value) -> void { Position += value; }
@@ -27,8 +27,9 @@ public:
 	auto	GetRotation() const -> Vector3F { return Rotation.GetEulerAngles(); }
 	auto	GetQuaternionRotation() const -> Quaternion { return Rotation; }
 
-	auto	operator = (const Transform&)->Transform& = delete;
-	auto	operator = (Transform&&)->Transform& = delete;
+	auto	operator*(Transform const& other) const -> Transform;
+
+	auto	operator=(const Transform&) -> Transform&;
 
 protected:
 

@@ -76,6 +76,7 @@ public:
 	auto	operator==(const Vector3F& v2) const -> bool;
 
 	auto	operator*(float mult) const -> Vector3F;
+	auto	operator*(Vector3F mult) const -> Vector3F { return Vector3F(x * mult.x, y * mult.y, z * mult.z); }
 	auto	operator/(float div) const -> Vector3F;
 
 	static const Vector3F back;

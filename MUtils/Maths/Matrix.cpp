@@ -58,7 +58,6 @@ auto	Matrix4x4F::Mult(const Matrix4x4F& mat1, const Matrix4x4F& mat2) -> Matrix4
 	return res;
 }
 
-
 auto	Matrix4x4F::Mult(const Matrix4x4F& mat, const Vector4F& vect) -> Vector4F
 {
 	//VECTOR AS COLUMN VECTOR
@@ -79,7 +78,6 @@ auto	Matrix4x4F::Translate(const Matrix4x4F& mat, const Vector3F& value) -> Matr
 	Result[14] += value.z;
 	return Result;
 }
-
 
 /*
 auto	Matrix4x4F::Rotate(const Matrix4x4F& mat, const float angle, const Vector3F& axis) -> Matrix4x4F
@@ -120,7 +118,6 @@ auto	Matrix4x4F::Rotate(const Matrix4x4F& mat, const float angle, const Vector3F
 	return Result;
 }
 
-
 auto	Matrix4x4F::Rotate(const Matrix4x4F& mat, const Quaternion& value) -> Matrix4x4F
 {
 	auto angle = value.GetAngle();
@@ -140,7 +137,6 @@ auto	Matrix4x4F::Scale(const Matrix4x4F& mat, const Vector3F& value) -> Matrix4x
 
 	return Mult(mat, temp);
 }
-
 
 auto	Matrix4x4F::Perspective(float const Fov, float const apectRatio, float const zNear, float const zFar) -> Matrix4x4F
 {
@@ -173,7 +169,6 @@ auto	Matrix4x4F::Orthographic(const float right, const float top, const float zN
 	res[14] = (zFar + zNear) / fMn;
 	return res;
 }
-
 
 auto	Matrix4x4F::Inverse(const Matrix4x4F& value) -> Matrix4x4F
 {
@@ -304,7 +299,6 @@ auto	Matrix4x4F::Inverse(const Matrix4x4F& value) -> Matrix4x4F
 	return ret;
 }
 
-
 auto	Matrix4x4F::FastInverse(const Matrix4x4F& value) -> Matrix4x4F
 {
 	Vector3F	X = GetRightFromView(value);
@@ -328,7 +322,6 @@ auto	Matrix4x4F::FastInverse(const Matrix4x4F& value) -> Matrix4x4F
 	);
 }
 
-
 auto	Matrix4x4F::LookAt(Vector3F center, Vector3F up, Vector3F target) -> Matrix4x4F
 {
 	Vector3F	zaxis = (target - center).Normalized();
@@ -343,7 +336,6 @@ auto	Matrix4x4F::LookAt(Vector3F center, Vector3F up, Vector3F target) -> Matrix
 
 	return ret;
 }
-
 
 auto	Matrix4x4F::GetUpFromView(const Matrix4x4F& value) -> Vector3F
 {
@@ -372,9 +364,8 @@ auto	Matrix4x4F::GetPositionFromView(const Matrix4x4F& value) -> Vector3F
 
 auto	Matrix4x4F::GetPositionFromModelMatrix(const Matrix4x4F& value) -> Vector3F
 {
-	return Vector3F(value[3], value[7], value[11]);
+	return Vector3F(value[12], value[13], value[14]);
 }
-
 
 auto	Matrix4x4F::ToString() const -> std::string
 {
@@ -626,6 +617,10 @@ auto	Matrix4x4F::SetColumn(unsigned int const columnIdx, const Vector4F& value) 
 	}
 }
 
+auto	Matrix4x4F::operator*(Matrix4x4F const& other) const -> Matrix4x4F
+{
+	return Mult(*this, other);
+}
 
 auto	Matrix4x4F::operator==(const Matrix4x4F& m2) const -> bool
 {
