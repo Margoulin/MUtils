@@ -51,6 +51,7 @@ public:
 	auto	SetColumn(unsigned int const rowIdx, const Vector3F& value) -> void;
 	auto	SetColumn(unsigned int const rowIdx, const Vector4F& value) -> void;
 
+	auto	Get(unsigned int const& idx) -> float& { return _values[idx]; }
 	auto	GetArray() const -> const float * const{ return _values; }
 
 	auto	operator*(Matrix4x4F const& other) const -> Matrix4x4F;
