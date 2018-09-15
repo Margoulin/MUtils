@@ -252,6 +252,13 @@ auto	Vector3F::ProjectOnPlane(const Vector3F& v1, const Vector3F& planeNormal) -
 	return planeNormal * Dot(v1, planeNormal);
 }
 
+auto	Vector3F::Lerp(Vector3F const& first, Vector3F const& second, float const& alpha) -> Vector3F
+{
+	float realAlpha = Clamp01(alpha);
+	return Vector3F(first.x + (second.x - first.x) * realAlpha,
+		first.y + (second.y - first.y) * realAlpha,
+		first.z + (second.z - first.z) * realAlpha);
+}
 
 auto	Vector3F::ToString() const -> std::string
 {

@@ -61,6 +61,7 @@ public:
 	static auto	Angle(const Vector3F& v1, const Vector3F& v2) -> float;
 	static auto	Project(const Vector3F& v1, const Vector3F& v2) -> Vector3F;
 	static auto	ProjectOnPlane(const Vector3F& v1, const Vector3F& planeNormal) -> Vector3F;
+	static auto	Lerp(Vector3F const& first, Vector3F const& second, float const& alpha) -> Vector3F;
 
 	auto	ToString() const -> std::string;
 	auto	ToVector2F() const -> Vector2F;

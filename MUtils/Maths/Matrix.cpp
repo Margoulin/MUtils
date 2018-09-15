@@ -314,11 +314,19 @@ auto	Matrix4x4F::FastInverse(const Matrix4x4F& value) -> Matrix4x4F
 	if (Vector3F::Dot(X, Z) != 0.0f)
 		return identity;
 
+	/*
 	return Matrix4x4F(
 		X.x, X.y, X.z, -value[3],
 		Y.x, Y.y, Y.z, -value[7],
 		Z.x, Z.y, Z.z, -value[11],
 		value[12], value[13], value[14], value[15]
+	);
+	*/
+	return Matrix4x4F(
+		X.x, Y.x, Z.x, 0.0f,
+		X.y, Y.y, Z.y, 0.0f,
+		X.z, Y.z, Z.z, 0.0f,
+		-value[12], -value[13], -value[14], 1.0f
 	);
 }
 

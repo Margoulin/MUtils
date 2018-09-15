@@ -177,13 +177,14 @@ public:
 		string = temp;
 	}
 
-	auto	Split(MString const& sep, MString* left, MString* right) -> bool
+	auto	Split(MString const& sep, MString* left, MString* right) const -> bool
 	{
 		char* res = strstr(string, sep.string);
 		if (!res)
 			return false;
 		right = &MString(res + sep.count);
 		left = &MString(string, (unsigned int)(res - string));
+		return true;
 	}
 
 	auto	ToLower() const -> MString
