@@ -33,6 +33,53 @@ auto	Quaternion::Euler(Vector3F const& value) -> Quaternion
 	return Quaternion::Euler(value.x, value.y, value.z);
 }
 
+auto	Quaternion::Lerp(Quaternion const& first, Quaternion const& second, float const& t) -> Quaternion
+{
+	float const realT = Clamp01(t);
+	float const invertRealT = 1.0f - realT;
+	Quaternion ret;
+	ret.X = first.X + (second.X - first.X) * realT;
+	ret.Y = first.Y + (second.Y - first.Y) * realT;
+	ret.Z = first.Z + (second.Z - first.Z) * realT;
+	ret.W = first.W + (second.W - first.W) * realT;
+	ret.Normalize();
+	return ret;
+}
+
+auto	Quaternion::Slerp(Quaternion const& first, Quaternion const& second, float const& t) -> Quaternion
+{
+	float dot = Dot(first, second);
+	float absD = Abs(dot);
+
+	float scale0;
+	float scale1;
+
+	if (absD >= 1.0f - FLT_EPSILON)
+	{
+		scale0 = 1.0f - t;
+		scale1 = t;
+	}
+	else
+	{
+		float theta = ArcCos(absD);
+		float sinTheta = Sin(theta);
+
+		scale0 = Sin((1.0f - t) * theta) / sinTheta;
+		scale1 = Sin(t * theta) / sinTheta;
+	}
+	if (dot < 0.0f)
+		scale1 = -scale1;
+
+	Quaternion ret;
+
+	ret.X = first.X * scale0 + second.X * scale1;
+	ret.Y = first.Y * scale0 + second.Y * scale1;
+	ret.Z = first.Z * scale0 + second.Z * scale1;
+	ret.W = first.W * scale0 + second.W * scale1;
+
+	return ret;
+}
+
 auto	Quaternion::Inverse(const Quaternion& value) -> Quaternion
 {
 	if (value.IsNormalized())

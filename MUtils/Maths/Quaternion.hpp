@@ -18,6 +18,8 @@ public:
 	static	auto	Euler(float, float, float) -> Quaternion;
 	static	auto	Euler(Vector3F const&) -> Quaternion;
 
+	static	auto	Lerp(Quaternion const& first, Quaternion const& second, float const& t) -> Quaternion;
+	static	auto	Slerp(Quaternion const& first, Quaternion const& second, float const& t) -> Quaternion;
 	static	auto	Inverse(const Quaternion& value) -> Quaternion;
 	static	auto	AngleAxis(float angle, Vector3F const& axis) -> Quaternion;
 	static	auto	Dot(Quaternion const&, Quaternion const&) -> float;
