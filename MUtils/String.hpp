@@ -48,6 +48,18 @@ public:
 		return ret;
 	}
 
+	auto	operator+(const char charValue) const -> MString
+	{
+		MString	ret = MString(true);
+
+		ret.count = count + 1;
+		ret.string = new char[ret.count + 1];
+		memcpy(ret.string, string, count);
+		ret[count] = charValue;
+		ret[count + 1] = '\0';
+		return ret;
+	}
+
 	auto	operator+(const char* other) const -> MString
 	{
 		MString	ret = MString(true);
