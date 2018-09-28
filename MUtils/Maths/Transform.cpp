@@ -1,46 +1,84 @@
 #include "Transform.hpp"
 
-#include <vector>
-
-Transform::Transform()
-	:Scale(1.0f, 1.0f, 1.0f)
+MTransform::MTransform()
+	:scale(1.0f, 1.0f, 1.0f)
 {
 }
 
-Transform::Transform(Vector3F const& posValue, Quaternion const& rotValue, Vector3F const& scaleValue)
+MTransform::MTransform(Vector3F const& posValue, Quaternion const& rotValue, Vector3F const& scaleValue)
 {
-	Position = posValue;
-	Rotation = rotValue;
-	Scale = scaleValue;
+	position = posValue;
+	rotation = rotValue;
+	scale = scaleValue;
 }
 	
-Transform::Transform(Matrix4x4F const& transformationMatrix)
+MTransform::MTransform(Matrix4x4F const& transformationMatrix)
 {
-	Position.x = transformationMatrix[12];
-	Position.y = transformationMatrix[13];
-	Position.z = transformationMatrix[14];
-	Rotation = Quaternion::MatrixToQuaternion(transformationMatrix);
+	position.x = transformationMatrix[12];
+	position.y = transformationMatrix[13];
+	position.z = transformationMatrix[14];
+	rotation = Quaternion::MatrixToQuaternion(transformationMatrix);
 }
 
-auto	Transform::GetLocalMatrix() const -> Matrix4x4F
-{
-	Matrix4x4F	translateMat = Matrix4x4F::Translate(Matrix4x4F::identity, Position);
-	Matrix4x4F	scaleMat = Matrix4x4F::Scale(Matrix4x4F::identity, Scale);
-	return Matrix4x4F::Mult(translateMat, Matrix4x4F::Mult(Quaternion::QuaternionToMatrix(Rotation), scaleMat));
+auto	MTransform::Translate(Vector3F const& value) -> void
+{ 
+	position += value;
+	localMatrixDirty = true;
 }
 
-auto	Transform::operator*(Transform const& other) const -> Transform
-{
-	Quaternion	tempRotation = other.GetQuaternionRotation() * this->Rotation;
-	Vector3F	tempScale = other.Scale * this->Scale;
-	Vector3F	tempPosition = other.GetQuaternionRotation() * (other.Position * this->Scale) + other.Position;
-	return Transform(tempPosition, tempRotation, tempScale);
+auto	MTransform::Rotate(Quaternion const& value) -> void
+{ 
+	rotation = rotation * value;
+	localMatrixDirty = true;
 }
 
-auto	Transform::operator=(const Transform& other) -> Transform&
+auto	MTransform::Scale(Vector3F const& value) -> void
 {
-	Position = other.Position;
-	Rotation = other.Rotation;
-	Scale = other.Scale;
+	scale = scale * value;
+	localMatrixDirty = true;
+}
+
+auto	MTransform::SetPosition(Vector3F const& value) -> void
+{
+	position = value;
+	localMatrixDirty = true;
+}
+
+auto	MTransform::SetScale(Vector3F const& value) -> void
+{
+	scale = value;
+	localMatrixDirty = true;
+}
+
+auto	MTransform::SetRotation(Vector3F const& value) -> void
+{
+	rotation = Quaternion::Euler(value);
+	localMatrixDirty = true;
+}
+
+auto	MTransform::SetRotation(Quaternion const& value) -> void
+{
+	rotation = value;
+	localMatrixDirty = true;
+}
+
+auto	MTransform::GetLocalMatrix() -> Matrix4x4F const&
+{
+	if (localMatrixDirty)
+	{
+		Matrix4x4F	translateMat = Matrix4x4F::Translate(Matrix4x4F::identity, position);
+		Matrix4x4F	scaleMat = Matrix4x4F::Scale(Matrix4x4F::identity, scale);
+		localMatrix = Matrix4x4F::Mult(translateMat, Matrix4x4F::Mult(Quaternion::QuaternionToMatrix(rotation), scaleMat));
+		localMatrixDirty = true;
+	}
+	return localMatrix;
+}
+
+auto	MTransform::operator=(const MTransform& other) -> MTransform&
+{
+	position = other.position;
+	rotation = other.rotation;
+	scale = other.scale;
+	localMatrixDirty = true;
 	return *this;
 }

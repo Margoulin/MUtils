@@ -5,38 +5,37 @@
 #include "Matrix.hpp"
 #include "Quaternion.hpp"
 
-class Transform
+class MTransform
 {
 public:
-	Transform();
-	Transform(Vector3F const& posValue, Quaternion const& rotValue, Vector3F const& scaleValue = Vector3F::one);
-	Transform(Matrix4x4F const& transformationMatrix);
-	~Transform() = default;
+	MTransform();
+	MTransform(Vector3F const& posValue, Quaternion const& rotValue, Vector3F const& scaleValue = Vector3F::one);
+	MTransform(Matrix4x4F const& transformationMatrix);
+	~MTransform() = default;
 
-	auto	Translate(Vector3F const& value) -> void { Position += value; }
-	auto	Rotate(Quaternion const& value) -> void { Rotation = Rotation * value; }
+	auto	Translate(Vector3F const& value) -> void;
+	auto	Rotate(Quaternion const& value) -> void;
+	auto	Scale(Vector3F const& value) -> void;
 
-	auto	SetPosition(Vector3F const& value) -> void { Position = value; }
-	auto	SetScale(Vector3F const& value) -> void { Scale = value; }
-	auto	SetRotation(Vector3F const& value) -> void { Rotation = Quaternion::Euler(value); }
-	auto	SetRotation(Quaternion const& value) -> void { Rotation = value; }
+	auto	SetPosition(Vector3F const& value) -> void;
+	auto	SetScale(Vector3F const& value) -> void;
+	auto	SetRotation(Vector3F const& value) -> void;
+	auto	SetRotation(Quaternion const& value) -> void;
 
-	auto	GetLocalMatrix() const -> Matrix4x4F;
-	auto	GetPosition() const -> Vector3F { return Position; }
-	auto	GetScale() const -> Vector3F { return Scale; }
-	auto	GetRotation() const -> Vector3F { return Rotation.GetEulerAngles(); }
-	auto	GetQuaternionRotation() const -> Quaternion { return Rotation; }
+	auto	GetLocalMatrix() -> Matrix4x4F const&;
+	auto	GetPosition() const -> Vector3F { return position; }
+	auto	GetScale() const -> Vector3F { return scale; }
+	auto	GetRotation() const -> Vector3F { return rotation.GetEulerAngles(); }
+	auto	GetQuaternionRotation() const -> Quaternion { return rotation; }
 
-	auto	operator*(Transform const& other) const -> Transform;
-
-	auto	operator=(const Transform&) -> Transform&;
+	auto	operator=(const MTransform&) -> MTransform&;
 
 protected:
-
-private:
-	Vector3F	Position;
-	Vector3F	Scale;
-	Quaternion	Rotation;
+	Matrix4x4F	localMatrix;
+	Quaternion	rotation;
+	Vector3F	position;
+	Vector3F	scale;
+	bool		localMatrixDirty = true;
 };
 
 
