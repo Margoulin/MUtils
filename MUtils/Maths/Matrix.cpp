@@ -142,13 +142,14 @@ auto	Matrix4x4F::Perspective(float const Fov, float const apectRatio, float cons
 {
 	float	fovRad = degToRad * Fov;
 	float	tanHalfFov = Tan(fovRad * 0.5f);
+	float nearMinFar = zNear - zFar;
 	Matrix4x4F	res = Matrix4x4F::identity;
 
 	res[0] = 1.f / (apectRatio * tanHalfFov);
 	res[5] = 1.f / tanHalfFov;
-	res[10] = -(zFar + zNear) / (zFar - zNear);
+	res[10] = (zFar + zNear) / nearMinFar;
 	res[11] = -1.f;
-	res[14] = -(2.f * zFar * zNear) / (zFar - zNear);
+	res[14] = (2.0f * zFar * zNear) / nearMinFar;
 	res[15] = 0.f;
 
 	return res;
