@@ -25,8 +25,8 @@ public:
 	auto	GetLocalMatrix() -> Matrix4x4F const&;
 	auto	GetPosition() const -> Vector3F { return position; }
 	auto	GetScale() const -> Vector3F { return scale; }
-	auto	GetRotation() const -> Vector3F { return rotation.GetEulerAngles(); }
-	auto	GetQuaternionRotation() const -> Quaternion { return rotation; }
+	auto	GetEulerRotation() const -> Vector3F { return rotation.GetEulerAngles(); }
+	auto	GetRotation() const -> Quaternion { return rotation; }
 
 	auto	operator=(const MTransform&) -> MTransform&;
 
