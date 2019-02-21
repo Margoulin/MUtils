@@ -2,6 +2,8 @@
 #define __MSTRING_HPP__
 
 #include <string>
+#include <cwchar>
+#include <stdlib.h>
 
 class MString
 {
@@ -85,6 +87,12 @@ public:
 		return *this;
 	}
 
+	auto	operator+=(char other) -> MString&
+	{
+		Append(other);
+		return *this;
+	}
+
 	auto	operator=(const char* other) -> MString&
 	{
 		delete string;
@@ -133,6 +141,17 @@ public:
 		delete string;
 		string = temp;
 		count = count + (unsigned int)len;
+	}
+
+	auto	Append(char other) -> void
+	{
+		char* temp = new char[count + 1 + 1];
+		memcpy(temp, string, count);
+		temp[count] = other;
+		temp[count + 1] = '\0';
+		delete string;
+		string = temp;
+		count += 1;
 	}
 
 	auto	Empty() -> void 
@@ -254,5 +273,79 @@ private:
 	unsigned int	count = 0;
 };
 
+class MWString
+{
+public:
+	MWString(bool empty = false)
+	{
+		if (empty)
+			return;
+		wstring = new wchar_t;
+		*wstring = '\0';
+	}
+
+	MWString(const wchar_t* other) { copy(other); }
+	MWString(const wchar_t* other, unsigned int length) { copy(other, length); }
+	MWString(const MWString& other) { copy(other); }
+
+	MWString(MWString&& other)
+	{
+		wstring = other.wstring;
+		other.wstring = nullptr;
+		count = other.count;
+		other.count = 0;
+	}
+
+	~MWString()
+	{
+		if (wstring != nullptr)
+		{
+			delete wstring;
+			wstring = nullptr;
+		}
+		count = 0;
+	}
+
+	static auto	FromString(MString const& string) -> MWString
+	{
+		MWString	ret(true);
+		ret.wstring = new wchar_t[string.Count() + 1];
+		size_t sizePtr;
+		mbstowcs_s(&sizePtr, ret.wstring, string.Count() + 1, string.Str(), string.Count() + 1);
+		//mbstowcs(ret.wstring, string.Str(), string.Count() + 1);
+		return ret;
+	}
+
+	auto	Str() const -> wchar_t* { return wstring; }
+	auto	Count() const -> unsigned int { return count; }
+
+private:
+	auto	copy(const wchar_t* other) -> void
+	{
+		size_t size = wcslen(other);
+		wstring = new wchar_t[size + 1];
+		wmemcpy(wstring, other, size);
+		count = size;
+	}
+
+	auto	copy(MWString const& other) -> void
+	{
+		wstring = new wchar_t[other.count + 1];
+		wmemcpy(wstring, other.wstring, other.count);
+		count = other.count;
+	}
+
+	auto copy(const wchar_t* other, unsigned int length) -> void
+	{
+		size_t otherLen = wcslen(other);
+		count = length > otherLen ? otherLen : length;
+		wstring = new wchar_t[count + 1];
+		wmemcpy(wstring, other, count);
+		wstring[count] = '\0';
+	}
+
+	wchar_t*		wstring;
+	unsigned int	count = 0;
+};
 
 #endif /*__MSTRING_HPP__*/
