@@ -75,6 +75,11 @@ public:
 		return ret;
 	}
 
+	friend MString	operator+(const char* value, MString const& other)
+	{
+		return MString(value) + other;
+	}
+
 	auto	operator+=(MString const& other) -> MString&
 	{
 		Append(other);
@@ -234,11 +239,37 @@ public:
 		return ret;
 	}
 
+	static MString FromInt(int const& value)
+	{
+		char buffer[50];
+		int n = 0;
+		n = sprintf_s(buffer, 50, "%d", value);
+		return MString(buffer, n);
+	}
+
+	static MString FromInt(unsigned int const& value)
+	{
+		char buffer[50];
+		int n = 0;
+		n = sprintf_s(buffer, 50,"%d", value);
+		return MString(buffer, n);
+	}
+
+	static MString FromFloat(float const& value)
+	{
+		char buffer[50];
+		int n = 0;
+		n = sprintf_s(buffer, 50, "%f", value);
+		return MString(buffer, n);
+	}
+
 	auto	Str() const -> char const* { return string; }
 	auto	Count() const -> unsigned int { return count; }
 
 	bool	operator==(const MString& other) { return strcmp(string, other.string) == 0; }
 	bool	operator==(char* other) { return strcmp(string, other) == 0; }	
+
+	bool	operator <(const MString& other) const { return strcmp(string, other.string) < 0; }
 
 	//ITERATOR SHIT
 
@@ -306,6 +337,30 @@ public:
 		count = 0;
 	}
 
+	auto	operator=(const wchar_t* other) -> MWString&
+	{
+		delete wstring;
+		copy(other);
+		return *this;
+	}
+
+	auto	operator=(const MWString& other) -> MWString&
+	{
+		delete wstring;
+		copy(other);
+		return *this;
+	}
+
+	auto	operator=(MWString&& other) -> MWString&
+	{
+		delete wstring;
+		wstring = other.wstring;
+		other.wstring = nullptr;
+		count = other.count;
+		other.count = 0;
+		return *this;
+	}
+
 	static auto	FromString(MString const& string) -> MWString
 	{
 		MWString	ret(true);
@@ -313,6 +368,8 @@ public:
 		size_t sizePtr;
 		mbstowcs_s(&sizePtr, ret.wstring, string.Count() + 1, string.Str(), string.Count() + 1);
 		//mbstowcs(ret.wstring, string.Str(), string.Count() + 1);
+		ret.count = string.Count();
+		ret.wstring[ret.count] = '\0';
 		return ret;
 	}
 
@@ -326,6 +383,7 @@ private:
 		wstring = new wchar_t[size + 1];
 		wmemcpy(wstring, other, size);
 		count = size;
+		wstring[count] = '\0';
 	}
 
 	auto	copy(MWString const& other) -> void
@@ -333,6 +391,7 @@ private:
 		wstring = new wchar_t[other.count + 1];
 		wmemcpy(wstring, other.wstring, other.count);
 		count = other.count;
+		wstring[count] = '\0';
 	}
 
 	auto copy(const wchar_t* other, unsigned int length) -> void
