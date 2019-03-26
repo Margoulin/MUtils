@@ -12,6 +12,7 @@ class Matrix4x4F
 public:
 	Matrix4x4F();
 	Matrix4x4F(float n1, float n2, float n3, float n4, float n5, float n6, float n7, float n8, float n9, float n10, float n11, float n12, float n13, float n14, float n15, float n16);
+	Matrix4x4F(float* floatTab) { memcpy(_values, floatTab, 16 * sizeof(float)); }
 	Matrix4x4F(const Matrix4x4F&);
 
 	static auto Mult(const Matrix4x4F& mat1, const Matrix4x4F& mat2) -> Matrix4x4F;
