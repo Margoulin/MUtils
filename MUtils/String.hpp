@@ -1,9 +1,10 @@
-#ifndef __MSTRING_HPP__
+﻿#ifndef __MSTRING_HPP__
 #define __MSTRING_HPP__
 
 #include <string>
 #include <cwchar>
 #include <stdlib.h>
+#include <codecvt>
 
 class MString
 {
@@ -37,6 +38,18 @@ public:
 			string = nullptr;
 		}
 		count = 0;
+	}
+
+	static auto	FromWString(const wchar_t* wideStr) -> MString
+	{
+		MString ret(true);
+		ret.count = wcslen(wideStr);
+		ret.string = new char[ret.count + 1];
+		ret.string[ret.count] = '\0';
+
+		size_t charsConverted = 0;
+		wcstombs_s(&charsConverted, ret.string, ret.count + 1, wideStr, ret.count);
+		return ret;
 	}
 
 	auto	operator+(const MString& other) const -> MString
@@ -247,7 +260,7 @@ public:
 		return MString(buffer, n);
 	}
 
-	static MString FromInt(unsigned int const& value)
+	static MString FromUInt(unsigned int const& value)
 	{
 		char buffer[50];
 		int n = 0;
@@ -337,6 +350,34 @@ public:
 		count = 0;
 	}
 
+	auto	Append(wchar_t* const other) -> void
+	{
+		size_t len = wcslen(other);
+		wchar_t* temp = new wchar_t[count + len + 1];
+		memcpy(temp, wstring, count * sizeof(wchar_t));
+		memcpy(temp + count * sizeof(wchar_t), other, (len + 1) * sizeof(wchar_t));
+		delete wstring;
+		wstring = temp;
+		count = count + (unsigned int)len;
+	}
+
+	auto	Append(wchar_t other) -> void
+	{
+		wchar_t* temp = new wchar_t[count + 1 + 1];
+		memcpy(temp, wstring, count * sizeof(wchar_t));
+		temp[count] = other;
+		temp[count + 1] = L'\0';
+		delete wstring;
+		wstring = temp;
+		count += 1;
+	}
+
+	auto	ToUTF8String() const -> MString
+	{
+		std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
+		return MString(conv.to_bytes(wstring).c_str());
+	}
+
 	auto	operator=(const wchar_t* other) -> MWString&
 	{
 		delete wstring;
@@ -359,6 +400,14 @@ public:
 		count = other.count;
 		other.count = 0;
 		return *this;
+	}
+	
+	auto	operator[](unsigned int idx) -> wchar_t& { return wstring[idx]; }
+
+	static auto FromUTF8(const char* str) -> MWString
+	{
+		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>, wchar_t> utf16conv;
+		return MWString(utf16conv.from_bytes(str).c_str());
 	}
 
 	static auto	FromString(MString const& string) -> MWString
@@ -403,7 +452,7 @@ private:
 		wstring[count] = '\0';
 	}
 
-	wchar_t*		wstring;
+	wchar_t*		wstring = nullptr;
 	unsigned int	count = 0;
 };
 
