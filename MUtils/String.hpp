@@ -374,6 +374,8 @@ public:
 
 	auto	ToUTF8String() const -> MString
 	{
+		if (count == 0)
+			return MString();
 		std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
 		return MString(conv.to_bytes(wstring).c_str());
 	}
